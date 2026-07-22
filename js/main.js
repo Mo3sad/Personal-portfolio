@@ -1,3 +1,109 @@
+/* ===== Language Switcher (EN default / AR) ===== */
+function setLanguage(lang) {
+  // Swap every element with data-en/data-ar
+  document.querySelectorAll("[data-en]").forEach((el) => {
+    const text = lang === "ar" ? el.dataset.ar : el.dataset.en;
+    if (text !== undefined) el.innerHTML = text;
+  });
+
+  // Swap input/textarea placeholders
+  document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
+    const text =
+      lang === "ar"
+        ? el.dataset.arPlaceholder
+        : el.dataset.enPlaceholder;
+
+    if (text !== undefined) {
+      el.setAttribute("placeholder", text);
+    }
+  });
+
+  // Swap Bootstrap CSS (LTR <-> RTL)
+  const bsLink = document.getElementById("bootstrapCSS");
+  if (bsLink) {
+    bsLink.href =
+      lang === "ar"
+        ? "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css"
+        : "css/bootstrap.min.css";
+  }
+
+  // Change html direction
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+
+  // Change Hero Arrow
+  const arrow = document.querySelector(".hero-arrow");
+  if (arrow) {
+    if (lang === "ar") {
+      arrow.classList.remove("fa-arrow-right");
+      arrow.classList.add("fa-arrow-left");
+    } else {
+      arrow.classList.remove("fa-arrow-left");
+      arrow.classList.add("fa-arrow-right");
+    }
+  }
+
+  // Save language
+  localStorage.setItem("siteLang", lang);
+
+  // Change button text
+  const langText = document.getElementById("langText");
+  if (langText) {
+    langText.textContent = lang === "ar" ? "EN" : "AR";
+  }
+
+  // Refresh projects
+  if (typeof refreshProjectsLanguage === "function") {
+    refreshProjectsLanguage(lang);
+  }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const savedLang = localStorage.getItem("siteLang") || "en"; // English by default
+  setLanguage(savedLang);
+
+  const langBtn = document.getElementById("langSwitch");
+  if (langBtn) {
+    langBtn.addEventListener("click", () => {
+      const currentLang = document.documentElement.lang === "ar" ? "ar" : "en";
+      setLanguage(currentLang === "ar" ? "en" : "ar");
+    });
+  }
+});
+// window.addEventListener("load", () => {
+
+//     const loader = document.getElementById("loader");
+//     const bar = document.getElementById("loaderBar");
+
+//     let width = 0;
+
+//     const loading = setInterval(() => {
+
+//         width++;
+
+//         bar.style.width = width + "%";
+
+//         if(width >= 100){
+
+//             clearInterval(loading);
+
+//             setTimeout(() => {
+
+//                 loader.classList.add("hide");
+
+//                 setTimeout(()=>{
+//                     loader.remove();
+//                 },600);
+
+//             },300);
+
+//         }
+
+//     },15);
+
+// });
+
 var mode = document.body;
 var input = document.querySelector("#modeToggle");
 var navLinks = document.querySelectorAll(".nav-link");
@@ -114,14 +220,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   loadSavedTheme();
-
   fontCards.forEach((card) => {
     card.addEventListener("click", function () {
       fontCards.forEach((c) => c.classList.remove("active"));
       this.classList.add("active");
 
       var radio = this.querySelector("input[type='radio']");
-
       if (radio) {
         radio.checked = true;
 
@@ -186,98 +290,90 @@ document.addEventListener("DOMContentLoaded", function () {
 var projectsData = [
   {
     id: 1,
-    title: "موقع شخصي إبداعي",
-    description: "تصميم موقع شخصي بأسلوب عصري وألوان جريئة",
-    category: "تصميم",
-    image: "assets/p-3.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["Figma", "UI/UX", "Prototype"],
+    title: "لوحة تحكم بنك",
+    titleEn: "Bank Dashboard",
+    description: "لوحة تحكم حديثة لإدارة الحسابات والمعاملات البنكية.",
+    descriptionEn:
+      "A modern banking dashboard for managing accounts and financial transactions.",
+    category: "تطبيق",
+    image: "assets/dash.png",
+    liveLink: "https://mo3sad.github.io/dashboard/",
+    githubLink: "https://github.com/Mo3sad/dashboard",
+    tags: ["HTML", "CSS", "Bootstrap", "JavaScript"],
   },
   {
     id: 2,
-    title: "تطبيق إدارة المهام",
-    description: "تطبيق ويب تفاعلي لإدارة المهام مع ميزات التعاون الجماعي",
+    title: "مطعم دينيار",
+    titleEn: "Dinear Restaurant",
+    description: "موقع مطعم احترافي يعرض القائمة وإمكانية الحجز.",
+    descriptionEn:
+      "A professional restaurant website showcasing the menu and reservation system.",
     category: "تطبيق",
-    image: "assets/p-2.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["Vue.js", "Firebase", "Tailwind"],
+    image: "assets/dinear.png",
+    liveLink: "https://mo3sad.github.io/Dinner/",
+    githubLink: "https://github.com/Mo3sad/Dinner",
+    tags: ["HTML", "CSS", "Bootstrap" ,"JavaScript"],
   },
   {
     id: 3,
-    title: "متجر إلكتروني متكامل",
-    description: "منصة تجارة إلكترونية حديثة مع نظام دفع آمن وإدارة المنتجات",
+    title: "إيليت هوم",
+    titleEn: "Elite Home",
+    description: "موقع عقارات حديث لعرض الوحدات السكنية والمشروعات.",
+    descriptionEn:
+      "A modern real estate website for showcasing properties and housing projects.",
     category: "موقع ويب",
-    image: "assets/p-1.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["React", "Node.js", "MongoDB"],
+    image: "assets/elithome.png",
+    liveLink: "https://mo3sad.github.io/Elitehome/",
+    githubLink: "https://github.com/Mo3sad/Elitehome",
+    tags: ["HTML", "CSS", "Bootstrap"],
   },
   {
     id: 4,
-    title: "متجر أزياء فاخر",
-    description: "منصة تسوق راقية للأزياء مع تجربة مستخدم استثنائية",
-    category: "تجارة",
-    image: "assets/p-6.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["Next.js", "Stripe", "Sanity"],
+    title: "متجر الألعاب",
+    titleEn: "Games Store",
+    description: "واجهة متجر ألعاب إلكترونية بتصميم عصري ومتجاوب.",
+    descriptionEn:
+      "A modern responsive gaming store interface with an attractive design.",
+    category: "موقع ويب",
+    image: "assets/games.png",
+    liveLink: "https://mo3sad.github.io/games/",
+    githubLink: "https://github.com/Mo3sad/games",
+    tags: ["HTML", "CSS", "Bootstrap"],
   },
   {
     id: 5,
-    title: "لوحة تحليلات اجتماعية",
-    description: "منصة تحليل وإدارة حسابات التواصل الاجتماعي",
+    title: "إدارة جهات الاتصال",
+    titleEn: "Contact Management",
+    description: "تطبيق لإدارة جهات الاتصال مع الإضافة والتعديل والبحث.",
+    descriptionEn:
+      "A contact management application with add, edit, delete, and search features.",
     category: "تطبيق",
-    image: "assets/p-5.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["React", "Chart.js", "API"],
-  },
-  {
-    id: 6,
-    title: "موقع شركة استشارية",
-    description: "موقع احترافي لشركة استشارات مع نظام حجز المواعيد",
-    category: "موقع ويب",
-    image: "assets/p-4.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["Next.js", "TypeScript", "Prisma"],
-  },
-  {
-    id: 7,
-    title: "تصميم تطبيق جوال",
-    description: "تصميم UI/UX كامل لتطبيق جوال متعدد الوظائف",
-    category: "تصميم",
-    image: "assets/p-9.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["Figma", "Adobe XD", "Sketch"],
-  },
-  {
-    id: 8,
-    title: "تطبيق لياقة بدنية",
-    description: "تطبيق متكامل لتتبع التمارين والتغذية والتقدم",
-    category: "تطبيق",
-    image: "assets/p-8.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["React Native", "Redux", "Firebase"],
-  },
-  {
-    id: 9,
-    title: "موقع مطعم وتوصيل",
-    description: "منصة طلب طعام مع نظام توصيل وتتبع الطلبات",
-    category: "موقع ويب",
-    image: "assets/p-7.webp",
-    liveLink: "#",
-    githubLink: "#",
-    tags: ["React", "Express", "PostgreSQL"],
+    image: "assets/contact.png",
+    liveLink: "https://mo3sad.github.io/ContactHub/",
+    githubLink: "https://github.com/Mo3sad/ContactHub",
+    tags: ["HTML", "CSS", "Bootstrap", "JavaScript"],
   },
 ];
-function displayProjects(filterCategory = "الكل") {
+var categoryLabels = {
+  الكل: { en: "All", ar: "الكل" },
+  "موقع ويب": { en: "Website", ar: "موقع ويب" },
+  تطبيق: { en: "Apps", ar: "التطبيقات" },
+  تصميم: { en: "Design", ar: "التصميم" },
+  تجارة: { en: "E-Commerce", ar: "التجارة الإلكترونية" },
+};
+
+var currentProjectFilter = "الكل";
+
+function refreshProjectsLanguage(lang) {
+  displayProjects(currentProjectFilter, lang);
+}
+function displayProjects(filterCategory = "الكل", lang) {
   var projectsRow = document.getElementById("projects-row");
   if (!projectsRow) return;
+
+  currentProjectFilter = filterCategory;
+  var currentLang =
+    lang || (document.documentElement.lang === "ar" ? "ar" : "en");
 
   projectsRow.innerHTML = "";
 
@@ -287,7 +383,11 @@ function displayProjects(filterCategory = "الكل") {
       : projectsData.filter((project) => project.category === filterCategory);
 
   if (filteredProjects.length === 0) {
-    projectsRow.innerHTML = `<div class="col-12 text-center text-muted py-5">لا توجد مشاريع في هذا القسم حالياً.</div>`;
+    var emptyMsg =
+      currentLang === "ar"
+        ? "لا توجد مشاريع في هذا القسم حالياً."
+        : "No projects in this category yet.";
+    projectsRow.innerHTML = `<div class="col-12 text-center text-muted py-5">${emptyMsg}</div>`;
     return;
   }
 
@@ -296,33 +396,42 @@ function displayProjects(filterCategory = "الكل") {
       .map((tag) => `<span class="tag-item">${tag}</span>`)
       .join("");
 
-    let badgeText = project.category;
-    if (project.category === "تجارة") badgeText = "تجارة إلكترونية";
+    var projectTitle = currentLang === "ar" ? project.title : project.titleEn;
+    var projectDesc =
+      currentLang === "ar" ? project.description : project.descriptionEn;
+
+    var badgeText =
+      (categoryLabels[project.category] &&
+        categoryLabels[project.category][currentLang]) ||
+      project.category;
 
     var resolvedImgSrc = project.image;
+
+    var previewLabel = currentLang === "ar" ? "معاينة حية" : "Live Preview";
+    var githubLabel = currentLang === "ar" ? "ملف جيت" : "GitHub Repo";
 
     var cardHTML = `
       <div class="col-12 col-md-6 col-lg-4 animate-fade-in">
         <div class="card project-card border-0 h-100">
           <div class="project-img-wrapper">
-            <img src="${resolvedImgSrc}" alt="${project.title}" class="img-fluid" />
+            <img src="${resolvedImgSrc}" alt="${projectTitle}" class="img-fluid" />
           </div>
 
           <div class="card-body project-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="badge-design">${badgeText}</span>
               <div class="action-buttons d-flex gap-2">
-                <a href="${project.liveLink}" class="btn-action" title="معاينة حية">
+                <a href="${project.liveLink}" target="_blank" class="btn-action" title="${previewLabel}">
                   <i class="far fa-eye"></i>
                 </a>
-                <a href="${project.githubLink}" class="btn-action" title="ملف جيت">
+                <a href="${project.githubLink}" target="_blank" class="btn-action" title="${githubLabel}">
                   <i class="fab fa-github"></i>
                 </a>
               </div>
             </div>
 
-            <h3 class="project-title mb-2">${project.title}</h3>
-            <p class="project-desc mb-4">${project.description}</p>
+            <h3 class="project-title mb-2">${projectTitle}</h3>
+            <p class="project-desc mb-4">${projectDesc}</p>
 
             <div class="project-tags mt-auto d-flex flex-wrap gap-2 justify-content-end">
               ${tagsHTML}
