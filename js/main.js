@@ -107,6 +107,7 @@ var mode = document.body;
 var input = document.querySelector("#modeToggle");
 var navLinks = document.querySelectorAll(".nav-link");
 var savedMode = JSON.parse(localStorage.getItem("mode")) || false;
+const experience = getExperienceYears("2025-07-01");
 const stats = document.querySelector(".stats");
 const btnScrol = document.querySelector(".scroll-top-btn");
 const statEx = document.querySelector(".statEx");
@@ -122,7 +123,7 @@ function startCounter(section, selector, end) {
 
   const timer = setInterval(() => {
     elements.forEach((el) => {
-      el.textContent = `${count}+`;
+      el.textContent =selector===".stat40"? `${count}%`: `${count}+`;
     });
 
     if (count >= end) clearInterval(timer);
@@ -130,6 +131,23 @@ function startCounter(section, selector, end) {
     count++;
   }, 30);
 }
+function getExperienceYears(startDate) {
+  const start = new Date(startDate);
+  const now = new Date();
+
+  let years = now.getFullYear() - start.getFullYear();
+
+  const monthDiff = now.getMonth() - start.getMonth();
+  const dayDiff = now.getDate() - start.getDate();
+
+  if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+    years--;
+  }
+
+  return years;
+}
+
+
 function updateTheme(isDark) {
   if (isDark) {
     mode.classList.add("body-dark");
@@ -152,9 +170,9 @@ function updateTheme(isDark) {
 window.addEventListener("scroll", () => {
   if (stats && scrollY >= stats.offsetTop - 300 && !statsStarted) {
     statsStarted = true;
-    startCounter(stats, ".stat50", 50);
-    startCounter(stats, ".stat8", 8);
-    startCounter(stats, ".stat40", 40);
+    startCounter(stats, ".stat50", projectsData.length);
+    startCounter(stats, ".stat8",experience);
+    startCounter(stats, ".stat40", 100);
   }
   if (skills && scrollY >= skills.offsetTop - 300 && !skillsStarted) {
     skillsStarted = true;
@@ -162,6 +180,13 @@ window.addEventListener("scroll", () => {
     bars.forEach((bar) => {
       bar.style.width = bar.dataset.width;
     });
+  }
+  if (statEx && scrollY >= statEx.offsetTop - 300 && !statExStarted) {
+    statExStarted = true;
+    startCounter(statEx, ".stat50", projectsData.length);
+    startCounter(statEx, ".stat8", experience);
+    startCounter(statEx, ".stat40", 100);
+    // startCounter(statEx, ".stat12", 12);
   }
   if (window.scrollY > 300) {
     btnScrol.classList.add("show");
@@ -357,6 +382,7 @@ var categoryLabels = {
 };
 
 var currentProjectFilter = "الكل";
+let count;
 
 function refreshProjectsLanguage(lang) {
   displayProjects(currentProjectFilter, lang);
@@ -385,57 +411,69 @@ function displayProjects(filterCategory = "الكل", lang) {
     return;
   }
 
-  filteredProjects.forEach((project) => {
-    var tagsHTML = project.tags
-      .map((tag) => `<span class="tag-item">${tag}</span>`)
-      .join("");
+ for (let i = 0; i < filteredProjects.length; i++) {
+  let project = filteredProjects[i];
 
-    var projectTitle = currentLang === "ar" ? project.title : project.titleEn;
-    var projectDesc =
-      currentLang === "ar" ? project.description : project.descriptionEn;
+  var tagsHTML = project.tags
+    .map((tag) => `<span class="tag-item">${tag}</span>`)
+    .join("");
 
-    var badgeText =
-      (categoryLabels[project.category] &&
-        categoryLabels[project.category][currentLang]) ||
-      project.category;
+  var projectTitle =
+    currentLang === "ar" ? project.title : project.titleEn;
 
-    var resolvedImgSrc = project.image;
+  var projectDesc =
+    currentLang === "ar"
+      ? project.description
+      : project.descriptionEn;
 
-    var previewLabel = currentLang === "ar" ? "معاينة حية" : "Live Preview";
-    var githubLabel = currentLang === "ar" ? "ملف جيت" : "GitHub Repo";
+  var badgeText =
+    (categoryLabels[project.category] &&
+      categoryLabels[project.category][currentLang]) ||
+    project.category;
 
-    var cardHTML = `
-      <div class="col-12 col-md-6 col-lg-4 animate-fade-in">
-        <div class="card project-card border-0 h-100">
-          <div class="project-img-wrapper">
-            <img src="${resolvedImgSrc}" alt="${projectTitle}" class="img-fluid" />
+  var resolvedImgSrc = project.image;
+
+  var previewLabel =
+    currentLang === "ar" ? "معاينة حية" : "Live Preview";
+
+  var githubLabel =
+    currentLang === "ar" ? "ملف جيت" : "GitHub Repo";
+
+  var cardHTML = `
+    <div class="col-12 col-md-6 col-lg-4 animate-fade-in">
+      <div class="card project-card border-0 h-100">
+        <div class="project-img-wrapper">
+          <img src="${resolvedImgSrc}" alt="${projectTitle}" class="w-100 h-100" />
+        </div>
+
+        <div class="card-body project-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="badge-design">${badgeText}</span>
+
+            <div class="action-buttons d-flex gap-2">
+              <a href="${project.liveLink}" target="_blank" class="btn-action" title="${previewLabel}">
+                <i class="far fa-eye"></i>
+              </a>
+
+              <a href="${project.githubLink}" target="_blank" class="btn-action" title="${githubLabel}">
+                <i class="fab fa-github"></i>
+              </a>
+            </div>
           </div>
 
-          <div class="card-body project-body d-flex flex-column">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <span class="badge-design">${badgeText}</span>
-              <div class="action-buttons d-flex gap-2">
-                <a href="${project.liveLink}" target="_blank" class="btn-action" title="${previewLabel}">
-                  <i class="far fa-eye"></i>
-                </a>
-                <a href="${project.githubLink}" target="_blank" class="btn-action" title="${githubLabel}">
-                  <i class="fab fa-github"></i>
-                </a>
-              </div>
-            </div>
+          <h3 class="project-title mb-2">${projectTitle}</h3>
+          <p class="project-desc mb-4">${projectDesc}</p>
 
-            <h3 class="project-title mb-2">${projectTitle}</h3>
-            <p class="project-desc mb-4">${projectDesc}</p>
-
-            <div class="project-tags mt-auto d-flex flex-wrap gap-2 justify-content-end">
-              ${tagsHTML}
-            </div>
+          <div class="project-tags mt-auto d-flex flex-wrap gap-2 justify-content-end">
+            ${tagsHTML}
           </div>
         </div>
       </div>
-    `;
-    projectsRow.insertAdjacentHTML("beforeend", cardHTML);
-  });
+    </div>
+  `;
+
+  projectsRow.insertAdjacentHTML("beforeend", cardHTML);
+}
 }
 
 function initProjectFilters() {
@@ -461,9 +499,7 @@ document.addEventListener("DOMContentLoaded", () => {
   displayProjects("الكل");
   initProjectFilters();
 });
-
 emailjs.init("1jmGPPRkZwFg1YAHZ");
-
 const form = document.getElementById("contactForm");
 if (form) {
   form.addEventListener("submit", function (e) {
