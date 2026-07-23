@@ -9,9 +9,7 @@ function setLanguage(lang) {
   // Swap input/textarea placeholders
   document.querySelectorAll("[data-en-placeholder]").forEach((el) => {
     const text =
-      lang === "ar"
-        ? el.dataset.arPlaceholder
-        : el.dataset.enPlaceholder;
+      lang === "ar" ? el.dataset.arPlaceholder : el.dataset.enPlaceholder;
 
     if (text !== undefined) {
       el.setAttribute("placeholder", text);
@@ -20,6 +18,7 @@ function setLanguage(lang) {
 
   // Swap Bootstrap CSS (LTR <-> RTL)
   const bsLink = document.getElementById("bootstrapCSS");
+
   if (bsLink) {
     bsLink.href =
       lang === "ar"
@@ -30,9 +29,9 @@ function setLanguage(lang) {
   // Change html direction
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-
   // Change Hero Arrow
   const arrow = document.querySelector(".hero-arrow");
+
   if (arrow) {
     if (lang === "ar") {
       arrow.classList.remove("fa-arrow-right");
@@ -48,6 +47,7 @@ function setLanguage(lang) {
 
   // Change button text
   const langText = document.getElementById("langText");
+
   if (langText) {
     langText.textContent = lang === "ar" ? "EN" : "AR";
   }
@@ -57,7 +57,6 @@ function setLanguage(lang) {
     refreshProjectsLanguage(lang);
   }
 }
-
 
 document.addEventListener("DOMContentLoaded", () => {
   const savedLang = localStorage.getItem("siteLang") || "en"; // English by default
@@ -109,6 +108,7 @@ var input = document.querySelector("#modeToggle");
 var navLinks = document.querySelectorAll(".nav-link");
 var savedMode = JSON.parse(localStorage.getItem("mode")) || false;
 const stats = document.querySelector(".stats");
+const btnScrol = document.querySelector(".scroll-top-btn");
 const statEx = document.querySelector(".statEx");
 let skills = document.querySelector(".skills");
 let bars = document.querySelectorAll(".progress-bar-fill");
@@ -156,15 +156,6 @@ window.addEventListener("scroll", () => {
     startCounter(stats, ".stat8", 8);
     startCounter(stats, ".stat40", 40);
   }
-
-  if (statEx && scrollY >= statEx.offsetTop - 300 && !statExStarted) {
-    statExStarted = true;
-    startCounter(statEx, ".stat50", 50);
-    startCounter(statEx, ".stat8", 8);
-    startCounter(statEx, ".stat40", 40);
-    startCounter(statEx, ".stat12", 12);
-  }
-
   if (skills && scrollY >= skills.offsetTop - 300 && !skillsStarted) {
     skillsStarted = true;
 
@@ -172,6 +163,9 @@ window.addEventListener("scroll", () => {
       bar.style.width = bar.dataset.width;
     });
   }
+  if (window.scrollY > 300) {
+    btnScrol.classList.add("show");
+  } else btnScrol.classList.remove("show");
 });
 updateTheme(savedMode);
 input.addEventListener("change", () => {
@@ -303,7 +297,7 @@ var projectsData = [
   },
   {
     id: 2,
-    title: "مطعم دينيار",
+    title: "مطعم",
     titleEn: "Dinear Restaurant",
     description: "موقع مطعم احترافي يعرض القائمة وإمكانية الحجز.",
     descriptionEn:
@@ -312,11 +306,11 @@ var projectsData = [
     image: "assets/dinear.png",
     liveLink: "https://mo3sad.github.io/Dinner/",
     githubLink: "https://github.com/Mo3sad/Dinner",
-    tags: ["HTML", "CSS", "Bootstrap" ,"JavaScript"],
+    tags: ["HTML", "CSS", "Bootstrap", "JavaScript"],
   },
   {
     id: 3,
-    title: "إيليت هوم",
+    title: " البيت الراقي",
     titleEn: "Elite Home",
     description: "موقع عقارات حديث لعرض الوحدات السكنية والمشروعات.",
     descriptionEn:
@@ -498,75 +492,3 @@ if (form) {
       });
   });
 }
-document.addEventListener("DOMContentLoaded", () => {
-  const track = document.getElementById("carouselTrack");
-  const nextBtn = document.getElementById("nextBtn");
-  const prevBtn = document.getElementById("prevBtn");
-  const dotsContainer = document.getElementById("carouselDots");
-
-  let currentPage = 0;
-
-  function getCardsPerPage() {
-    if (window.innerWidth <= 768) return 1;
-    return 3;
-  }
-
-  function createDots() {
-    dotsContainer.innerHTML = "";
-    const totalCards = track.children.length;
-    const cardsPerPage = getCardsPerPage();
-    const totalPages = Math.ceil(totalCards / cardsPerPage);
-
-    for (let i = 0; i < totalPages; i++) {
-      const dot = document.createElement("span");
-      dot.classList.add("carousel-dot");
-      if (i === currentPage) dot.classList.add("active");
-
-      dot.addEventListener("click", () => {
-        currentPage = i;
-        updateCarousel();
-      });
-
-      dotsContainer.appendChild(dot);
-    }
-  }
-
-  function updateCarousel() {
-    const cardsPerPage = getCardsPerPage();
-    const card = track.querySelector(".carousel-card");
-    const gap = 20;
-    const cardWidth = card.getBoundingClientRect().width + gap;
-
-    const shiftAmount = currentPage * cardsPerPage * cardWidth;
-    track.style.transform = `translateX(-${shiftAmount}px)`;
-
-    const dots = dotsContainer.querySelectorAll(".carousel-dot");
-    dots.forEach((dot, index) => {
-      dot.classList.toggle("active", index === currentPage);
-    });
-  }
-
-  nextBtn.addEventListener("click", () => {
-    const totalPages = Math.ceil(track.children.length / getCardsPerPage());
-    if (currentPage < totalPages - 1) {
-      currentPage++;
-      updateCarousel();
-    }
-  });
-
-  prevBtn.addEventListener("click", () => {
-    if (currentPage > 0) {
-      currentPage--;
-      updateCarousel();
-    }
-  });
-
-  window.addEventListener("resize", () => {
-    currentPage = 0;
-    createDots();
-    updateCarousel();
-  });
-
-  createDots();
-  updateCarousel();
-});
