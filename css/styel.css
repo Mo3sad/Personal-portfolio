@@ -520,16 +520,16 @@ body {
   border: 1px dotted var(--primary-them);
 }
 .circle-outer {
-  width: 400px;
-  height: 400px;
-
+  width: 360px;
+  height: 360px;
   animation: rotate-clockwise 45s linear infinite;
 }
 .circle-inner {
-  width: 330px;
-  height: 330px;
+  width: 430px;
+  height: 430px;
 
   animation: rotate-counter 30s linear infinite;
+ 
 }
 
 .tech-icon {
@@ -1591,6 +1591,21 @@ body {
   .nav-item {
     width: fit-content !important;
   }
+  .navbar .h1-nav {
+    font-size: 18px;
+  }
+  .profile-image-frame {
+    width: 250px;
+    height: 250px;
+  }
+  .circle-outer {
+    width: 300px;
+    height: 300px;
+  }
+  .circle-inner {
+    width: 330px;
+    height: 330px;
+  }
 }
 
 /* Medium devices (التابلت / Tablets - من 768px) */
@@ -1603,10 +1618,8 @@ body {
   .timeline-item .timeline-dot-right {
     top: 30%;
     right: 49%;
-
   }
 }
-
 
 @media (min-width: 992px) {
   .timeline-item .timeline-dot-left {
@@ -1617,7 +1630,6 @@ body {
   .timeline-item .timeline-dot-right {
     top: 35%;
     right: 49%;
-
   }
 }
 @media (min-width: 1200px) {
@@ -1629,10 +1641,8 @@ body {
   .timeline-item .timeline-dot-right {
     top: 42%;
     right: 49%;
-
   }
 }
-
 
 .lang-switch {
   display: flex;
